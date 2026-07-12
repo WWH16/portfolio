@@ -119,6 +119,12 @@ function onLoaderComplete() {
   initScrollReveal();
   initProjectRows();
   initContactForm();
+
+  // Set current year dynamically in footer
+  const yearEl = $('#current-year');
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
 }
 
 // ============================================================
