@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-12T22:00:00Z",
+  "title": "Design System: Nova Silva Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Deep Forest Green", "canonical": "oklch(0.56 0.19 145)", "tonalRamp": ["#052e16", "#14532d", "#166534", "#15803d", "#16a34a", "#22c55e", "#4ade80", "#86efac"] },
+      "neutral-bg": { "role": "neutral", "displayName": "Off-white Background", "canonical": "oklch(0.985 0.003 120)", "tonalRamp": ["#050806", "#0f1511", "#1b2520", "#313f38", "#4e5e55", "#77887e", "#afbeaf", "#fafcf5"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines only." },
+      "body": { "displayName": "Body", "purpose": "All reading and interface copy." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default easing for all slides and scale adjustments." }
+    ],
+    "breakpoints": [
+      { "name": "tablet", "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Bold, dark button used for primary user actions.",
+      "html": "<button class=\"ds-btn-primary\">GET STARTED</button>",
+      "css": ".ds-btn-primary { background: #262d29; color: #fafcf5; padding: 16px 32px; letter-spacing: 0.05em; font-family: 'Space Grotesk', sans-serif; font-size: 0.875rem; font-weight: 600; border: none; border-radius: 100px; cursor: pointer; transition: background 0.2s, transform 0.2s; } .ds-btn-primary:hover { background: #15803d; transform: translateY(-2px); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Modern Green Editorial",
+    "overview": "A light-themed design system characterized by sophisticated typography, high typographic contrast, brutalist layouts, and modern green accents. It rejects typical dark purple templates, generic SaaS cards, and lack of visual character.",
+    "keyCharacteristics": [
+      "Light background with subtle green/neutral tint.",
+      "Forest and mint green accents.",
+      "Archivo display font paired with Space Grotesk body font.",
+      "Floating slide-up back-to-top navigation helper."
+    ],
+    "rules": [
+      { "name": "The accent rarity rule", "body": "The primary green accent should cover <=10% of any screen. Its rarity drives emphasis.", "section": "colors" }
+    ],
+    "dos": [
+      "Do maintain a strict 4.5:1 text-to-background contrast ratio using the defined forest green and near-black colors.",
+      "Do disable scroll-animations and custom cursors for users preferring reduced motion."
+    ],
+    "donts": [
+      "Don't use generic blue/indigo SaaS card layouts or gradient text overlays.",
+      "Don't use thick left-side borders as accent decorators on cards."
+    ]
+  }
+}
