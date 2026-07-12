@@ -719,6 +719,13 @@ nav.scrolled {
   cursor: none;
   transition: border-color var(--dur-mid);
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+.project-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 .project-row::after {
@@ -731,8 +738,10 @@ nav.scrolled {
   transition: transform var(--dur-mid) var(--ease-out-expo);
   z-index: -1;
 }
-.project-row:hover::after { transform: scaleY(1); }
-.project-row:hover { border-color: transparent; }
+.project-row:hover::after,
+.project-row:focus-visible::after { transform: scaleY(1); }
+.project-row:hover,
+.project-row:focus-visible { border-color: transparent; }
 
 .project-row:last-child { border-bottom: 1px solid var(--border); }
 
@@ -859,9 +868,12 @@ nav.scrolled {
   inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform 0.8s var(--ease-out-expo);
 }
-.featured-card:hover .featured-card-img { transform: scale(1.04); }
+
+.featured-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
 
 .featured-card-overlay {
   position: absolute;
@@ -997,7 +1009,7 @@ nav.scrolled {
 .skill-chip:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: oklch(0.72 0.18 294 / 0.06);
+  background: oklch(0.56 0.19 145 / 0.06);
 }
 
 /* ============================
@@ -1282,6 +1294,9 @@ footer {
 .footer-links {
   display: flex;
   gap: var(--space-6);
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .footer-link {
