@@ -177,6 +177,7 @@ function initNav() {
     hamburger.classList.toggle('open', drawerOpen);
     hamburger.setAttribute('aria-expanded', drawerOpen);
     drawer.classList.toggle('open', drawerOpen);
+    nav.classList.toggle('drawer-open', drawerOpen);
     document.body.style.overflow = drawerOpen ? 'hidden' : '';
   });
 
@@ -189,6 +190,7 @@ function initNav() {
     hamburger.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
     drawer.classList.remove('open');
+    nav.classList.remove('drawer-open');
     document.body.style.overflow = '';
   }
 
