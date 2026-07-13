@@ -125,6 +125,23 @@ function onLoaderComplete() {
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
   }
+
+  // Set dynamic timezone time in footer (Manila Time: Asia/Manila)
+  const timeEl = $('#footer-time');
+  if (timeEl) {
+    const updateTime = () => {
+      const options = {
+        timeZone: 'Asia/Manila',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      };
+      timeEl.textContent = new Date().toLocaleTimeString('en-US', options);
+    };
+    updateTime();
+    setInterval(updateTime, 1000);
+  }
 }
 
 // ============================================================

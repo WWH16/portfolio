@@ -5,10 +5,10 @@
 brand
 
 ## Users
-Companies, startups, and product teams looking for high-quality freelancing partners, custom software development collaborations, and creative direction.
+Students, researchers, and local businesses looking for custom software development commissions, thesis/capstone implementation, business systems, and POS systems.
 
 ## Product Purpose
-Showcase Nova Silva's creative direction, visual craft, and front-end expertise to win premium freelance projects and bespoke software development contracts.
+Showcase John Ansley Rocel's full-stack coding capabilities, database engineering, and system architectural skills to win premium thesis/capstone commissions and POS/business system development contracts.
 
 ## Brand Personality
 Modern Green, sophisticated, bespoke, and interactive.
