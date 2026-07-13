@@ -14,12 +14,19 @@ function initTheme() {
   const setTheme = (theme) => {
     html.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
+    const isDark = theme === 'dark';
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    }
+    if (toggleBtnDrawer) {
+      toggleBtnDrawer.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    }
     if (drawerLabel) {
-      drawerLabel.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+      drawerLabel.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
     // Update body cursor class if body is loaded
     if (document.body) {
-      if (theme === 'dark') {
+      if (isDark) {
         document.body.classList.add('dark-theme');
       } else {
         document.body.classList.remove('dark-theme');
@@ -223,12 +230,18 @@ function initCursor() {
   });
 
   function animateFollower() {
-    raf = null;
     fx += (mx - fx) * 0.12;
     fy += (my - fy) * 0.12;
     follower.style.left = fx + 'px';
     follower.style.top  = fy + 'px';
-    raf = requestAnimationFrame(animateFollower);
+
+    const dx = mx - fx;
+    const dy = my - fy;
+    if (Math.abs(dx) > 0.15 || Math.abs(dy) > 0.15) {
+      raf = requestAnimationFrame(animateFollower);
+    } else {
+      raf = null;
+    }
   }
 
   // Hover detection
@@ -504,12 +517,12 @@ function initProjectRows() {
   if (!preview || isMobile()) return;
 
   let mx = 0, my = 0;
+  let isKeyboardFocused = false;
 
   document.addEventListener('mousemove', (e) => {
     mx = e.clientX;
     my = e.clientY;
-    if (preview.classList.contains('visible')) {
-      // Offset so it doesn't cover the row text
+    if (preview.classList.contains('visible') && !isKeyboardFocused) {
       const x = mx + 24;
       const y = my - 90;
       preview.style.left = x + 'px';
@@ -521,15 +534,36 @@ function initProjectRows() {
     const imgSrc = row.dataset.img;
     const imgAlt = row.dataset.imgAlt || '';
 
-    row.addEventListener('mouseenter', () => {
+    const show = (rect) => {
       if (!imgSrc) return;
       previewImg.src = imgSrc;
       previewImg.alt = imgAlt;
       preview.classList.add('visible');
-    });
+      if (rect) {
+        const x = rect.left + (rect.width * 0.55);
+        const y = rect.top + (rect.height / 2) - 90;
+        preview.style.left = x + 'px';
+        preview.style.top  = y + 'px';
+      }
+    };
 
-    row.addEventListener('mouseleave', () => {
+    const hide = () => {
       preview.classList.remove('visible');
+    };
+
+    row.addEventListener('mouseenter', () => {
+      isKeyboardFocused = false;
+      show();
+    });
+    row.addEventListener('mouseleave', hide);
+
+    row.addEventListener('focus', () => {
+      isKeyboardFocused = true;
+      show(row.getBoundingClientRect());
+    });
+    row.addEventListener('blur', () => {
+      isKeyboardFocused = false;
+      hide();
     });
   });
 }

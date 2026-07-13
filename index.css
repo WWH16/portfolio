@@ -15,7 +15,7 @@
   --border:       oklch(0.86  0.010 130);   /* soft green-grey border */
   --ink:          oklch(0.17  0.010 150);   /* near-black with green tint */
   --ink-muted:    oklch(0.44  0.020 150);   /* medium green-grey */
-  --ink-subtle:   oklch(0.65  0.015 140);   /* light muted ink */
+  --ink-subtle:   oklch(0.48  0.015 140);   /* light muted ink */
   --accent:       oklch(0.56  0.19  145);   /* modern deep green */
   --accent-2:     oklch(0.68  0.17  155);   /* lighter emerald */
   --accent-glow:  oklch(0.56  0.19  145 / 0.18);
@@ -64,7 +64,7 @@
   --border:       oklch(0.24 0.012 145);
   --ink:          oklch(0.96 0.005 145);
   --ink-muted:    oklch(0.62 0.018 145);
-  --ink-subtle:   oklch(0.42 0.012 145);
+  --ink-subtle:   oklch(0.72 0.012 145);
   --accent:       oklch(0.68 0.19  145);   /* brighter green on dark */
   --accent-2:     oklch(0.75 0.17  155);
   --accent-glow:  oklch(0.68 0.19  145 / 0.28);
@@ -297,17 +297,20 @@ nav.drawer-open {
   transform: translateY(-1px);
 }
 
-/* Hamburger */
 .nav-hamburger {
   display: none;
   flex-direction: column;
-  gap: 5px;
-  width: 28px;
-  cursor: none;
+  justify-content: center;
+  align-items: flex-end;
+  width: 44px;
+  height: 44px;
+  padding: var(--space-2);
+  cursor: pointer;
   z-index: var(--z-modal);
 }
 .nav-hamburger span {
   display: block;
+  width: 28px;
   height: 1.5px;
   background: var(--ink);
   border-radius: 2px;
@@ -1463,7 +1466,14 @@ footer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-1);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: background-color var(--dur-fast), color var(--dur-fast);
+}
+
+.footer-socials-row .footer-link:hover {
+  background-color: var(--surface);
 }
 
 .footer-socials-row .footer-link svg {
@@ -1474,7 +1484,7 @@ footer {
 }
 
 .footer-socials-row .footer-link:hover svg {
-  transform: translateY(-2px) scale(1.1);
+  transform: translateY(-1px);
   color: var(--accent);
 }
 
@@ -1513,7 +1523,7 @@ footer {
 }
 
 .social-link {
-  width: 40px; height: 40px;
+  width: 44px; height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
