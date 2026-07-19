@@ -1103,23 +1103,14 @@ async function initDynamicProjects() {
           
           const year = new Date(repo.pushed_at || repo.created_at).getFullYear();
           
-          let imgSrc = '';
-          try {
-            const assetsRes = await fetch(`https://api.github.com/repos/WWH16/${repo.name}/contents/assets`);
-            if (assetsRes.ok) {
-              const assets = await assetsRes.json();
-              const imgFile = assets.find(file => file.name.match(/\\.(jpg|jpeg|png|gif|webp)$/i));
-              if (imgFile) {
-                imgSrc = imgFile.download_url;
-              }
-            }
-          } catch (e) {
-            console.warn('Could not fetch assets for', repo.name);
-          }
+          const imgMap = {
+            'tumor-classification-web-ver': 'assets/landing.png',
+            'MMS': 'docs/images/browse1.png',
+            'barangay_connect': 'assets/landing.png'
+          };
           
-          if (!imgSrc) {
-            imgSrc = 'assets/project_branding_1783858362778.jpg'; // Static fallback
-          }
+          const imgPath = imgMap[repo.name];
+          const imgSrc = `https://raw.githubusercontent.com/WWH16/${repo.name}/${repo.default_branch || 'main'}/${imgPath}`;
 
           const numStr = String(index).padStart(2, '0');
           
