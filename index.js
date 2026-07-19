@@ -24,7 +24,10 @@ function initTheme() {
     if (drawerLabel) {
       drawerLabel.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
-    // Update body cursor class if body is loaded
+    const announcer = $('#sr-announcer');
+    if (announcer) {
+      announcer.textContent = `Theme changed to ${theme} mode`;
+    }
     if (document.body) {
       if (isDark) {
         document.body.classList.add('dark-theme');
@@ -123,6 +126,9 @@ function onLoaderComplete() {
   initScrollToTop();
   initHeroAnimation();
   initThreeJS();
+  initLenis();
+  initMagneticButtons();
+  initGlowCards();
   initScrollReveal();
   initProjectRows();
   initContactForm();
@@ -159,14 +165,19 @@ function initNav() {
   const hamburger   = $('#nav-hamburger');
   const drawer      = $('#nav-drawer');
   const drawerLinks = $$('.drawer-link');
+  const main        = $('#main-content');
 
   // Animate nav in
-  gsap.to(nav, {
-    y: 0,
-    duration: 0.8,
-    ease: 'expo.out',
-    delay: 0.2,
-  });
+  if (prefersReducedMotion) {
+    gsap.set(nav, { y: 0 });
+  } else {
+    gsap.to(nav, {
+      y: 0,
+      duration: 0.8,
+      ease: 'expo.out',
+      delay: 0.2,
+    });
+  }
 
   // Scroll-based nav style
   ScrollTrigger.create({
@@ -176,34 +187,63 @@ function initNav() {
     },
   });
 
-  // Hamburger / drawer
   let drawerOpen = false;
 
-  hamburger.addEventListener('click', () => {
-    drawerOpen = !drawerOpen;
-    hamburger.classList.toggle('open', drawerOpen);
-    hamburger.setAttribute('aria-expanded', drawerOpen);
-    drawer.classList.toggle('open', drawerOpen);
-    nav.classList.toggle('drawer-open', drawerOpen);
-    document.body.style.overflow = drawerOpen ? 'hidden' : '';
-  });
-
-  drawerLinks.forEach((link) => {
-    link.addEventListener('click', closeDrawer);
-  });
+  function openDrawer() {
+    drawerOpen = true;
+    hamburger.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    drawer.classList.add('open');
+    drawer.removeAttribute('aria-hidden');
+    nav.classList.add('drawer-open');
+    document.body.style.overflow = 'hidden';
+    if (main) main.setAttribute('aria-hidden', 'true');
+    // Focus first focusable link
+    setTimeout(() => drawerLinks[0]?.focus(), 50);
+  }
 
   function closeDrawer() {
     drawerOpen = false;
     hamburger.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
     drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
     nav.classList.remove('drawer-open');
     document.body.style.overflow = '';
+    if (main) main.removeAttribute('aria-hidden');
+    hamburger.focus();
   }
 
-  // Keyboard trap for drawer
+  hamburger.addEventListener('click', () => {
+    if (drawerOpen) closeDrawer();
+    else openDrawer();
+  });
+
+  drawerLinks.forEach((link) => {
+    link.addEventListener('click', closeDrawer);
+  });
+
+  // Focus trap & keyboard handler for drawer
   drawer.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDrawer();
+    if (e.key === 'Escape') {
+      closeDrawer();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      const focusables = $$('#nav-drawer a, #nav-drawer button');
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   });
 }
 
@@ -211,7 +251,9 @@ function initNav() {
 // CUSTOM CURSOR (desktop only)
 // ============================================================
 function initCursor() {
-  if (isMobile()) return;
+  if (isMobile() || prefersReducedMotion) return;
+
+  document.body.classList.add('custom-cursor-active');
 
   const cursor   = $('#cursor');
   const follower = $('#cursor-follower');
@@ -320,98 +362,291 @@ function initHeroAnimation() {
 }
 
 // ============================================================
-// THREE.JS — Particle field in hero
+// THREE.JS — Undulating Grid Wave field in hero
 // ============================================================
+function createCircleTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 32;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  
+  const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+  grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  grad.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+  grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+  grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 32, 32);
+  
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
 function initThreeJS() {
   const canvas = $('#three-canvas');
   if (!canvas || typeof THREE === 'undefined') return;
 
   const scene    = new THREE.Scene();
-  const camera   = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-  camera.position.z = 5;
+  const camera   = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  camera.position.z = 10;
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  // Particles
-  const count    = isMobile() ? 600 : 1400;
-  const geometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(count * 3);
-  const colors    = new Float32Array(count * 3);
-  const sizes     = new Float32Array(count);
-
-  const colorA = new THREE.Color(0x16a34a); // deep green
-  const colorB = new THREE.Color(0x34d399); // emerald
-  const colorC = new THREE.Color(0x86efac); // light mint
-
+  const count = isMobile() ? 40 : 100;
+  const nodes = [];
+  
+  // Bounding area sizes
+  const areaW = 16;
+  const areaH = 10;
+  const areaD = 8;
+  
+  // Initialize nodes with position, target velocity, current velocity
   for (let i = 0; i < count; i++) {
-    // Spread across a wide area
-    positions[i * 3]     = (Math.random() - 0.5) * 20;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-
-    // Random color mix
-    const t   = Math.random();
-    const col = t < 0.5
-      ? colorA.clone().lerp(colorC, t * 2)
-      : colorB.clone().lerp(colorC, (t - 0.5) * 2);
-
-    colors[i * 3]     = col.r;
-    colors[i * 3 + 1] = col.g;
-    colors[i * 3 + 2] = col.b;
-
-    sizes[i] = Math.random() * 2.5 + 0.5;
+    nodes.push({
+      x: (Math.random() - 0.5) * areaW,
+      y: (Math.random() - 0.5) * areaH,
+      z: (Math.random() - 0.5) * areaD,
+      vx: (Math.random() - 0.5) * 0.03,
+      vy: (Math.random() - 0.5) * 0.03,
+      vz: (Math.random() - 0.5) * 0.03,
+      targetVx: (Math.random() - 0.5) * 0.015,
+      targetVy: (Math.random() - 0.5) * 0.015,
+      targetVz: (Math.random() - 0.5) * 0.015,
+      size: Math.random() * 2 + 1
+    });
   }
 
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
-  geometry.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
+  // Create Points (nodes)
+  const pointsGeom = new THREE.BufferGeometry();
+  const positions = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+  
+  for(let i=0; i<count; i++) {
+    positions[i*3] = nodes[i].x;
+    positions[i*3+1] = nodes[i].y;
+    positions[i*3+2] = nodes[i].z;
+    sizes[i] = nodes[i].size;
+  }
+  
+  pointsGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  pointsGeom.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+  
+  const pointsMaterial = new THREE.PointsMaterial({
+    size: 0.16,
+    map: createCircleTexture(),
+    color: 0x34d399,
+    transparent: true,
+    opacity: 0.8,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  
+  const pointsMesh = new THREE.Points(pointsGeom, pointsMaterial);
+  scene.add(pointsMesh);
 
-  const material = new THREE.PointsMaterial({
-    size: 0.045,
+  // Pre-allocate buffer for connecting lines
+  const maxLines = isMobile() ? 150 : 400;
+  const lineGeom = new THREE.BufferGeometry();
+  const linePositions = new Float32Array(maxLines * 2 * 3);
+  const lineColors = new Float32Array(maxLines * 2 * 3);
+  
+  lineGeom.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+  lineGeom.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+  
+  const lineMaterial = new THREE.LineBasicMaterial({
     vertexColors: true,
     transparent: true,
-    sizeAttenuation: true,
-    depthWrite: false,
+    opacity: 0.4,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
   });
+  
+  const lineSegments = new THREE.LineSegments(lineGeom, lineMaterial);
+  scene.add(lineSegments);
 
-  const updateMaterialForTheme = (theme) => {
+  const colorForest = new THREE.Color(0x16a34a);
+  const colorMint = new THREE.Color(0x34d399);
+
+  const updateVisualsForTheme = (theme) => {
     const isDark = theme === 'dark';
-    material.blending = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
-    material.opacity = isDark ? 0.65 : 0.35;
-    material.needsUpdate = true;
+    if (isDark) {
+      pointsMaterial.opacity = 0.85;
+      pointsMaterial.color.set(colorMint);
+      pointsMaterial.blending = THREE.AdditiveBlending;
+      
+      lineMaterial.opacity = 0.45;
+      lineMaterial.blending = THREE.AdditiveBlending;
+    } else {
+      pointsMaterial.opacity = 0.55;
+      pointsMaterial.color.setHex(0x15803d);
+      pointsMaterial.blending = THREE.NormalBlending;
+      
+      lineMaterial.opacity = 0.22;
+      lineMaterial.blending = THREE.NormalBlending;
+    }
+    pointsMaterial.needsUpdate = true;
+    lineMaterial.needsUpdate = true;
   };
 
-  // Set initial blending/opacity based on current theme
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-  updateMaterialForTheme(currentTheme);
+  updateVisualsForTheme(currentTheme);
 
-  // Listen for theme changes dynamically
   window.addEventListener('themechange', (e) => {
-    updateMaterialForTheme(e.detail.theme);
+    updateVisualsForTheme(e.detail.theme);
   });
 
-  const particles = new THREE.Points(geometry, material);
-  scene.add(particles);
+  let targetMouseX = 0, targetMouseY = 0;
+  let currentMouseX = 0, currentMouseY = 0;
+  let mouseActive = false;
 
-  // Mouse parallax
-  let mouseX = 0, mouseY = 0;
   document.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    targetMouseX = (e.clientX / window.innerWidth - 0.5) * areaW;
+    targetMouseY = -(e.clientY / window.innerHeight - 0.5) * areaH;
+    mouseActive = true;
   });
 
-  // Animate
-  let animId;
+  document.addEventListener('mouseleave', () => {
+    mouseActive = false;
+  });
+
   const heroEl = $('#hero');
+  if (heroEl) {
+    heroEl.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = ((e.clientX - rect.left) / rect.width - 0.5) * areaW;
+      const clickY = -((e.clientY - rect.top) / rect.height - 0.5) * areaH;
+      
+      for (let i = 0; i < count; i++) {
+        const node = nodes[i];
+        const dx = node.x - clickX;
+        const dy = node.y - clickY;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+        
+        if (dist < 8) {
+          const force = (8 - dist) * 0.12;
+          node.vx += (dx / dist) * force;
+          node.vy += (dy / dist) * force;
+        }
+      }
+    });
+  }
+
+  const threshold = isMobile() ? 2.2 : 2.8;
+  let animId;
 
   function animate() {
     animId = requestAnimationFrame(animate);
-    const t = Date.now() * 0.00025;
 
-    particles.rotation.y = t * 0.3 + mouseX * 0.08;
-    particles.rotation.x = t * 0.1 - mouseY * 0.04;
+    if (mouseActive) {
+      currentMouseX += (targetMouseX - currentMouseX) * 0.08;
+      currentMouseY += (targetMouseY - currentMouseY) * 0.08;
+    }
+
+    const posArr = pointsGeom.attributes.position.array;
+    for (let i = 0; i < count; i++) {
+      const node = nodes[i];
+
+      node.vx += (node.targetVx - node.vx) * 0.03;
+      node.vy += (node.targetVy - node.vy) * 0.03;
+      node.vz += (node.targetVz - node.vz) * 0.03;
+
+      if (mouseActive) {
+        const dx = currentMouseX - node.x;
+        const dy = currentMouseY - node.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+        if (dist < 4) {
+          const pull = (4 - dist) * 0.0015;
+          node.vx += (dx / dist) * pull;
+          node.vy += (dy / dist) * pull;
+        }
+      }
+
+      node.x += node.vx;
+      node.y += node.vy;
+      node.z += node.vz;
+
+      const limitX = areaW / 2;
+      const limitY = areaH / 2;
+      const limitZ = areaD / 2;
+
+      if (Math.abs(node.x) > limitX) {
+        node.vx *= -1;
+        node.targetVx *= -1;
+        node.x = Math.sign(node.x) * limitX;
+      }
+      if (Math.abs(node.y) > limitY) {
+        node.vy *= -1;
+        node.targetVy *= -1;
+        node.y = Math.sign(node.y) * limitY;
+      }
+      if (Math.abs(node.z) > limitZ) {
+        node.vz *= -1;
+        node.targetVz *= -1;
+        node.z = Math.sign(node.z) * limitZ;
+      }
+
+      posArr[i*3] = node.x;
+      posArr[i*3+1] = node.y;
+      posArr[i*3+2] = node.z;
+    }
+    pointsGeom.attributes.position.needsUpdate = true;
+
+    let lineIdx = 0;
+    const linePosArr = lineGeom.attributes.position.array;
+    const lineColArr = lineGeom.attributes.color.array;
+    
+    linePosArr.fill(0);
+    lineColArr.fill(0);
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const r1 = isDark ? 0.20 : 0.08;
+    const g1 = isDark ? 0.82 : 0.50;
+    const b1 = isDark ? 0.60 : 0.24;
+
+    for (let i = 0; i < count; i++) {
+      for (let j = i + 1; j < count; j++) {
+        if (lineIdx >= maxLines) break;
+
+        const n1 = nodes[i];
+        const n2 = nodes[j];
+
+        const dx = n1.x - n2.x;
+        const dy = n1.y - n2.y;
+        const dz = n1.z - n2.z;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (dist < threshold) {
+          const vertexIdx = lineIdx * 6;
+          
+          linePosArr[vertexIdx] = n1.x;
+          linePosArr[vertexIdx + 1] = n1.y;
+          linePosArr[vertexIdx + 2] = n1.z;
+          
+          linePosArr[vertexIdx + 3] = n2.x;
+          linePosArr[vertexIdx + 4] = n2.y;
+          linePosArr[vertexIdx + 5] = n2.z;
+
+          const alpha = Math.max(0, 1 - (dist / threshold));
+          
+          const colIdx = lineIdx * 6;
+          lineColArr[colIdx] = r1 * alpha;
+          lineColArr[colIdx + 1] = g1 * alpha;
+          lineColArr[colIdx + 2] = b1 * alpha;
+          
+          lineColArr[colIdx + 3] = r1 * alpha;
+          lineColArr[colIdx + 4] = g1 * alpha;
+          lineColArr[colIdx + 5] = b1 * alpha;
+
+          lineIdx++;
+        }
+      }
+    }
+
+    lineGeom.attributes.position.needsUpdate = true;
+    lineGeom.attributes.color.needsUpdate = true;
 
     renderer.render(scene, camera);
   }
@@ -419,7 +654,6 @@ function initThreeJS() {
   if (!prefersReducedMotion) animate();
   else renderer.render(scene, camera);
 
-  // Resize
   const resizeObserver = new ResizeObserver(() => {
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
@@ -429,7 +663,6 @@ function initThreeJS() {
   });
   resizeObserver.observe(canvas);
 
-  // Stop when hero not visible (perf)
   ScrollTrigger.create({
     trigger: heroEl,
     start: 'top top',
@@ -440,11 +673,83 @@ function initThreeJS() {
 }
 
 // ============================================================
+// LENIS SMOOTH SCROLL
+// ============================================================
+function initLenis() {
+  if (prefersReducedMotion || typeof Lenis === 'undefined') return;
+
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+  window.lenis = lenis;
+}
+
+// ============================================================
+// MAGNETIC BUTTONS
+// ============================================================
+function initMagneticButtons() {
+  if (prefersReducedMotion) return;
+
+  const magnets = $$('.magnetic');
+  magnets.forEach((btn) => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      gsap.to(btn, {
+        x: x * 0.35,
+        y: y * 0.35,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: 'expo.out',
+      });
+    });
+  });
+}
+
+// ============================================================
+// GLOW CARDS (MOUSE GLOW TRACKING)
+// ============================================================
+function initGlowCards() {
+  if (prefersReducedMotion) return;
+
+  const cards = $$('.glow-card');
+  cards.forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+}
+
+// ============================================================
 // SCROLL REVEAL
 // ============================================================
 function initScrollReveal() {
   if (prefersReducedMotion) {
-    // Force all reveals visible immediately
     $$('.reveal, .process-card, .testimonial-card').forEach(el => {
       el.style.opacity = '1';
       el.style.transform = 'none';
@@ -452,8 +757,6 @@ function initScrollReveal() {
     return;
   }
 
-  // Set initial states PROGRAMMATICALLY (not via CSS)
-  // so content is visible by default for headless renderers / no-JS
   const reveals = $$('.reveal');
   gsap.set(reveals, { opacity: 0, y: 28 });
 
@@ -474,7 +777,6 @@ function initScrollReveal() {
     });
   });
 
-  // Process cards stagger
   gsap.to('.process-card', {
     opacity: 1,
     y: 0,
@@ -488,7 +790,6 @@ function initScrollReveal() {
     },
   });
 
-  // Testimonials slide in
   gsap.to('.testimonial-card', {
     opacity: 1,
     x: 0,
@@ -502,7 +803,6 @@ function initScrollReveal() {
     },
   });
 
-  // Refresh ScrollTrigger after fonts/images load
   window.addEventListener('load', () => ScrollTrigger.refresh());
 }
 
@@ -514,7 +814,7 @@ function initProjectRows() {
   const preview = $('#project-preview');
   const previewImg = $('#project-preview-img');
 
-  if (!preview || isMobile()) return;
+  if (!preview || isMobile() || prefersReducedMotion) return;
 
   let mx = 0, my = 0;
   let isKeyboardFocused = false;
@@ -579,7 +879,6 @@ function initContactForm() {
 
   if (!form) return;
 
-  // Basic inline validation
   const inputs = form.querySelectorAll('[required]');
 
   inputs.forEach((input) => {
@@ -598,50 +897,67 @@ function initContactForm() {
     }
 
     if (msg) {
+      field.setAttribute('aria-invalid', 'true');
       field.style.borderColor = 'oklch(0.65 0.18 25)';
       if (!error) {
         error = document.createElement('span');
         error.className = 'form-error';
+        error.id = `${field.id}-error`;
         error.setAttribute('role', 'alert');
         error.style.cssText = 'font-size:0.72rem; color:oklch(0.65 0.18 25); margin-top:4px; display:block;';
         parent.appendChild(error);
       }
       error.textContent = msg;
+      field.setAttribute('aria-describedby', error.id);
     } else {
+      field.removeAttribute('aria-invalid');
       field.style.borderColor = '';
-      if (error) error.remove();
+      if (error) {
+        error.remove();
+      }
+      if (field.id !== 'message') {
+        field.removeAttribute('aria-describedby');
+      } else {
+        field.setAttribute('aria-describedby', 'message-helper');
+      }
     }
   }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Validate all required fields
     let valid = true;
     inputs.forEach((input) => {
       validateField(input);
-      if (!input.value.trim()) valid = false;
+      if (!input.value.trim() || input.getAttribute('aria-invalid') === 'true') {
+        valid = false;
+      }
     });
 
     if (!valid) {
-      inputs[0].focus();
+      const firstInvalid = form.querySelector('[aria-invalid="true"]');
+      if (firstInvalid) firstInvalid.focus();
       return;
     }
 
-    // Simulate submission
     submitBtn.disabled = true;
     submitText.textContent = 'Sending…';
-    submitArrow.style.display = 'none';
+    if (submitArrow) submitArrow.style.display = 'none';
 
     setTimeout(() => {
       submitText.textContent = '✓ Message Sent!';
-      submitBtn.style.background = 'oklch(0.72 0.18 145)';
+      submitBtn.style.background = 'var(--accent)';
+      
+      const announcer = $('#sr-announcer');
+      if (announcer) {
+        announcer.textContent = 'Your message has been sent successfully.';
+      }
 
       setTimeout(() => {
         form.reset();
         submitBtn.disabled = false;
         submitText.textContent = 'Send Message';
-        submitArrow.style.display = '';
+        if (submitArrow) submitArrow.style.display = '';
         submitBtn.style.background = '';
       }, 3000);
     }, 1500);
@@ -653,18 +969,31 @@ function initContactForm() {
 // ============================================================
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener('click', (e) => {
-    const target = document.querySelector(anchor.getAttribute('href'));
+    const targetId = anchor.getAttribute('href');
+    if (!targetId || targetId === '#') return;
+    const target = document.querySelector(targetId);
     if (target) {
       e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Close mobile drawer if open
+      
+      if (window.lenis && !prefersReducedMotion) {
+        window.lenis.scrollTo(target);
+      } else {
+        target.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'start'
+        });
+      }
+
       const drawer    = $('#nav-drawer');
       const hamburger = $('#nav-hamburger');
       if (drawer && drawer.classList.contains('open')) {
         drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden', 'true');
         hamburger && hamburger.classList.remove('open');
         hamburger && hamburger.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
+        const main = $('#main-content');
+        if (main) main.removeAttribute('aria-hidden');
       }
     }
   });
@@ -686,9 +1015,13 @@ function initScrollToTop() {
   });
 
   btn.addEventListener('click', () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    if (window.lenis && !prefersReducedMotion) {
+      window.lenis.scrollTo(0);
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+      });
+    }
   });
 }

@@ -16,6 +16,9 @@
 </head>
 <body>
 
+  <!-- ===== SKIP TO CONTENT ===== -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <!-- ===== CURSOR ===== -->
   <div id="cursor" aria-hidden="true"></div>
   <div id="cursor-follower" aria-hidden="true"></div>
@@ -46,8 +49,8 @@
   </div>
 
   <!-- ===== NAV ===== -->
-  <nav id="nav" role="navigation" aria-label="Main navigation">
-    <a href="#" class="nav-logo" id="nav-logo" aria-label="John Ansley Rocel — Home">
+  <nav id="nav" aria-label="Main navigation">
+    <a href="#hero" class="nav-logo" id="nav-logo" aria-label="John Ansley Rocel — Home">
       <span class="nav-logo-dot" aria-hidden="true"></span>
       John Ansley Rocel
     </a>
@@ -58,7 +61,7 @@
       <li><a href="#contact" class="nav-link">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <a href="#contact" class="nav-cta" id="nav-cta">Let's Talk</a>
+      <a href="#contact" class="nav-cta magnetic" id="nav-cta">Let's Talk</a>
       <!-- Theme Toggle Slider -->
       <button id="theme-toggle" class="theme-slider" aria-label="Toggle dark mode" aria-pressed="false">
         <span class="theme-icon-sun-mini" aria-hidden="true">
@@ -88,7 +91,7 @@
   </nav>
 
   <!-- Mobile Drawer -->
-  <div class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Mobile navigation" aria-modal="true">
+  <div class="nav-drawer" id="nav-drawer" role="dialog" aria-label="Mobile navigation" aria-modal="true" aria-hidden="true">
     <a href="#work" class="drawer-link" style="--i:0">Work</a>
     <a href="#about" class="drawer-link" style="--i:1">About</a>
     <a href="#process" class="drawer-link" style="--i:2">Process</a>
@@ -97,6 +100,12 @@
       <span id="drawer-theme-label">🌙 Dark Mode</span>
     </button>
   </div>
+
+  <!-- Screen reader live region for announcements -->
+  <div id="sr-announcer" aria-live="polite" class="sr-only"></div>
+
+  <!-- ===== MAIN CONTENT LANDMARK ===== -->
+  <main id="main-content">
 
   <!-- ===== HERO ===== -->
   <section class="hero" id="hero" aria-label="Introduction">
@@ -129,10 +138,10 @@
       </div>
 
       <div class="hero-actions reveal" id="hero-actions">
-        <a href="#work" class="btn btn-primary" id="hero-cta-work">
+        <a href="#work" class="btn btn-primary magnetic" id="hero-cta-work">
           View Selected Work
         </a>
-        <a href="#contact" class="btn-arrow">
+        <a href="#contact" class="btn-arrow magnetic">
           Start a Project
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -274,30 +283,46 @@
   <!-- ===== FEATURED PROJECT ===== -->
   <section class="featured-section" id="featured" aria-label="Featured project">
     <div class="featured-inner">
-      <div class="featured-card reveal" id="featured-card" tabindex="0" role="button" aria-label="View Nexus POS project">
-        <img
-          src="assets/project_fintech_1783858348259.jpg"
-          alt="Nexus POS System — point of sale and inventory system dashboard with neon accents"
-          class="featured-card-img"
-          loading="lazy"
-          width="1280" height="700"
-        >
-        <div class="featured-card-overlay" aria-hidden="true"></div>
-        <div class="featured-card-content">
-          <div>
-            <p class="featured-label">Featured Commission — 2025</p>
-            <h2 class="featured-title">Nexus POS &amp; Inventory</h2>
-            <p class="featured-desc">
-              A point of sale and real-time inventory management system. Built with SQLite/MySQL database synchronization, offline transaction support, and reporting dashboards.
-            </p>
+      <div class="featured-split reveal">
+        <div class="featured-details">
+          <p class="featured-eyebrow">
+            <span class="nav-logo-dot" aria-hidden="true"></span>
+            Featured Commission — 2025
+          </p>
+          <h2 class="featured-heading">Nexus POS &amp; Inventory</h2>
+          <div class="featured-meta">
+            <span class="meta-item">Database Architecture</span>
+            <span class="meta-item">POS Design</span>
+            <span class="meta-item">Offline Sync</span>
           </div>
-          <div>
-            <a href="#work" class="btn btn-outline" style="color: oklch(0.985 0.003 120); border-color: rgba(255,255,255,0.3); background: oklch(0 0 0 / 0.2);">
+          <p class="featured-text">
+            A point of sale and real-time inventory management system built for high transaction stability. Features offline-first operations with automated SQLite to MySQL synchronization, real-time analytics dashboards, and custom invoice generation.
+          </p>
+          <div class="featured-actions-row">
+            <a href="#work" class="btn btn-accent magnetic" id="featured-cta">
               View Case Study
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </a>
+          </div>
+        </div>
+        <div class="featured-visual-container">
+          <div class="featured-frame">
+            <div class="frame-header" aria-hidden="true">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="frame-title">nexus_dashboard.py</span>
+            </div>
+            <div class="frame-content">
+              <img
+                src="assets/project_fintech_1783858348259.jpg"
+                alt="Nexus POS System — point of sale and inventory system dashboard with neon accents"
+                class="featured-visual-img"
+                loading="lazy"
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -310,7 +335,7 @@
       <div>
         <h2 class="section-heading reveal" style="margin-top: 0;">Completed<br><em style="font-style:italic; font-weight:300; color:var(--ink-muted)">projects.</em></h2>
       </div>
-      <a href="#contact" class="btn-arrow reveal">
+      <a href="#contact" class="btn-arrow reveal magnetic">
         All Projects
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -432,14 +457,69 @@
         </div>
         <div class="project-row-right">
           <span class="project-year">2024</span>
-          <div class="project-arrow" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
+      <a href="#contact" class="project-row reveal" data-img="assets/pos_project_preview_1783858421045.jpg" data-img-alt="Apex POS Suite interface" aria-label="View Apex POS Suite project details">
+        <div class="project-num">01</div>
+        <div class="project-info">
+          <h3 class="project-title">Apex POS Suite</h3>
+          <p class="project-desc">PHP / MySQL Point-of-Sale System with Thermal Receipt Support</p>
+        </div>
+        <div class="project-tags">
+          <span class="tag">PHP</span>
+          <span class="tag">MySQL</span>
+          <span class="tag">Hardware Integration</span>
+        </div>
+        <div class="project-arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
         </div>
       </a>
 
+      <a href="#contact" class="project-row reveal" data-img="assets/ai_project_preview_1783858437704.jpg" data-img-alt="AgriVision AI Web App interface" aria-label="View AgriVision AI Web App project details">
+        <div class="project-num">02</div>
+        <div class="project-info">
+          <h3 class="project-title">AgriVision AI Web App</h3>
+          <p class="project-desc">Web-Based Crop Disease Classifier &amp; Capstone System</p>
+        </div>
+        <div class="project-tags">
+          <span class="tag">Python</span>
+          <span class="tag">TensorFlow</span>
+          <span class="tag">AI Web App</span>
+        </div>
+        <div class="project-arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+        </div>
+      </a>
+
+      <a href="#contact" class="project-row reveal" data-img="assets/nexus_pos_preview_1783858403920.jpg" data-img-alt="LogiSync Desktop App interface" aria-label="View LogiSync Desktop App project details">
+        <div class="project-num">03</div>
+        <div class="project-info">
+          <h3 class="project-title">LogiSync Desktop App</h3>
+          <p class="project-desc">Cross-Platform Java Warehouse Management &amp; Inventory Software</p>
+        </div>
+        <div class="project-tags">
+          <span class="tag">Java</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">Desktop App</span>
+        </div>
+        <div class="project-arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+        </div>
+      </a>
+
+      <a href="#contact" class="project-row reveal" data-img="assets/docu_preview_1783858455502.jpg" data-img-alt="System Documentation Bundle sample" aria-label="View Capstone Documentation Bundle project details">
+        <div class="project-num">04</div>
+        <div class="project-info">
+          <h3 class="project-title">Capstone Documentation Bundle</h3>
+          <p class="project-desc">Complete System Architecture, ERD, DFD, &amp; User Manuals</p>
+        </div>
+        <div class="project-tags">
+          <span class="tag">System Design</span>
+          <span class="tag">Documentation</span>
+          <span class="tag">Diagrams</span>
+        </div>
+        <div class="project-arrow" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+        </div>
+      </a>
     </div>
   </section>
 
@@ -454,7 +534,7 @@
           loading="lazy"
           width="600" height="800"
         >
-        <div class="about-image-accent" aria-label="5 years of experience">
+        <div class="about-image-accent" role="img" aria-label="5 years of experience">
           <span class="about-stat-num">5+</span>
           <span class="about-stat-label">Years of<br>Coding</span>
         </div>
@@ -519,34 +599,34 @@
       </div>
 
       <div class="process-grid" role="list">
-        <article class="process-card reveal" role="listitem">
+        <div class="process-card reveal glow-card" role="listitem">
           <div class="process-card-num" aria-hidden="true">01</div>
           <h3 class="process-card-title">Analyze</h3>
           <p class="process-card-text">
             Deep analysis of project requirements, database logic, and system guidelines. We define what needs to be built.
           </p>
-        </article>
-        <article class="process-card reveal" role="listitem">
+        </div>
+        <div class="process-card reveal glow-card" role="listitem">
           <div class="process-card-num" aria-hidden="true">02</div>
           <h3 class="process-card-title">Architect</h3>
           <p class="process-card-text">
             Designing robust Entity-Relationship Diagrams (ERDs), flowcharts, and selecting the optimal tech stack.
           </p>
-        </article>
-        <article class="process-card reveal" role="listitem">
+        </div>
+        <div class="process-card reveal glow-card" role="listitem">
           <div class="process-card-num" aria-hidden="true">03</div>
           <h3 class="process-card-title">Develop</h3>
           <p class="process-card-text">
             Coding custom business systems, thesis deliverables, or POS software with clean structures and data safety in mind.
           </p>
-        </article>
-        <article class="process-card reveal" role="listitem">
+        </div>
+        <div class="process-card reveal glow-card" role="listitem">
           <div class="process-card-num" aria-hidden="true">04</div>
           <h3 class="process-card-title">Deploy &amp; Document</h3>
           <p class="process-card-text">
             Full system testing, deployment, and providing complete system documentation (ERDs, DFDs, data dictionaries, user guides) for defenses or launches.
           </p>
-        </article>
+        </div>
       </div>
     </div>
   </section>
@@ -560,9 +640,9 @@
       </div>
     </div>
 
-    <div class="testimonials-track" role="list">
+    <div class="testimonials-track" role="list" data-lenis-prevent>
 
-      <article class="testimonial-card reveal" role="listitem">
+      <div class="testimonial-card reveal glow-card" role="listitem">
         <div class="testimonial-quote" aria-hidden="true">"</div>
         <p class="testimonial-text">
           John built our custom POS system from scratch. The database is stable, transactions are fast, and the code was delivered on schedule.
@@ -576,9 +656,9 @@
             <div class="testimonial-role">Manager, Pulse Retail</div>
           </div>
         </div>
-      </article>
+      </div>
 
-      <article class="testimonial-card reveal" role="listitem">
+      <div class="testimonial-card reveal glow-card" role="listitem">
         <div class="testimonial-quote" aria-hidden="true">"</div>
         <p class="testimonial-text">
           We needed a web app with machine learning classification for our capstone. John integrated the AI model and provided excellent documentation for our defense.
@@ -592,9 +672,9 @@
             <div class="testimonial-role">Computer Science Student</div>
           </div>
         </div>
-      </article>
+      </div>
 
-      <article class="testimonial-card reveal" role="listitem">
+      <div class="testimonial-card reveal glow-card" role="listitem">
         <div class="testimonial-quote" aria-hidden="true">"</div>
         <p class="testimonial-text">
           John trained a custom recognition model for our automated scanner. The model accuracy exceeded our requirements and saved us weeks of manual work.
@@ -608,9 +688,9 @@
             <div class="testimonial-role">Operations Lead, Solaris Logix</div>
           </div>
         </div>
-      </article>
+      </div>
 
-      <article class="testimonial-card reveal" role="listitem">
+      <div class="testimonial-card reveal glow-card" role="listitem">
         <div class="testimonial-quote" aria-hidden="true">"</div>
         <p class="testimonial-text">
           The custom inventory system John developed resolved our tracking issues. The SQLite database sync works database-wide, and the interface is easy to use.
@@ -624,7 +704,7 @@
             <div class="testimonial-role">Owner, Marble Goods</div>
           </div>
         </div>
-      </article>
+      </div>
 
     </div>
   </section>
@@ -642,71 +722,72 @@
             <div class="contact-detail-icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             </div>
-            <a href="mailto:estevesjancen388@gmail.com" style="color: var(--ink-muted); transition: color 150ms;">
-              estevesjancen388@gmail.com
-            </a>
+            <a href="mailto:estevesjancen388@gmail.com" aria-label="Send email to estevesjancen388@gmail.com">estevesjancen388@gmail.com</a>
           </div>
+
           <div class="contact-detail">
             <div class="contact-detail-icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.95z"/></svg>
             </div>
-            <span style="color: var(--ink-muted);">Cauayan City, Isabela · Remote Worldwide</span>
+            <a href="https://www.facebook.com/johnansley.esteves/" target="_blank" rel="noopener noreferrer" aria-label="Connect with John Ansley Rocel on Facebook / Messenger">Facebook / Messenger</a>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon" aria-hidden="true">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </div>
+            <a href="https://www.linkedin.com/in/rocel-john-ansley-982336307/" target="_blank" rel="noopener noreferrer" aria-label="Connect with John Ansley Rocel on LinkedIn">LinkedIn Profile</a>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail-icon" aria-hidden="true">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </div>
+            <a href="https://github.com/WWH16" target="_blank" rel="noopener noreferrer" aria-label="View John Ansley Rocel's GitHub repository">GitHub Profile</a>
           </div>
         </div>
       </div>
 
-      <form class="contact-form" id="contact-form" novalidate aria-label="Send a message to John Ansley Rocel">
+      <form class="contact-form reveal" id="contact-form" novalidate>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="contact-name">Your Name <span aria-hidden="true">*</span></label>
-            <input
-              type="text"
-              id="contact-name"
-              name="name"
-              class="form-input"
-              required
-              placeholder="James Moreau"
-              autocomplete="name"
-            >
+            <label for="name" class="form-label">Your Name <span aria-hidden="true">*</span></label>
+            <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Alex Rivera" required>
           </div>
           <div class="form-group">
-            <label class="form-label" for="contact-email">Email Address <span aria-hidden="true">*</span></label>
-            <input
-              type="email"
-              id="contact-email"
-              name="email"
-              class="form-input"
-              required
-              placeholder="james@company.com"
-              autocomplete="email"
-            >
+            <label for="email" class="form-label">Email Address <span aria-hidden="true">*</span></label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="e.g. alex@company.com" required>
           </div>
         </div>
+
         <div class="form-group">
-          <label class="form-label" for="contact-subject">Project Type</label>
-          <input
-            type="text"
-            id="contact-subject"
-            name="subject"
-            class="form-input"
-            placeholder="e.g. Custom Web App, POS System, AI Model Training..."
-          >
+          <label for="project-type" class="form-label">Project Category</label>
+          <select id="project-type" name="project_type" class="form-input">
+            <option value="pos">Custom POS / Business System</option>
+            <option value="ai-webapp">AI Web Application</option>
+            <option value="ai-model">Custom AI Model Training</option>
+            <option value="capstone">Thesis / Capstone System</option>
+            <option value="docu">System Documentation Only</option>
+            <option value="other">Other Inquiry</option>
+          </select>
         </div>
+
         <div class="form-group">
-          <label class="form-label" for="contact-message">Tell me about your project <span aria-hidden="true">*</span></label>
-          <textarea
-            id="contact-message"
-            name="message"
-            class="form-textarea"
+          <label for="message" class="form-label">Project Details <span aria-hidden="true">*</span></label>
+          <textarea 
+            id="message" 
+            name="message" 
+            rows="5" 
+            class="form-textarea" 
+            placeholder="Tell me about your system requirements, timeline, and features needed..."
             required
-            placeholder="What are you building? What does success look like?..."
             aria-describedby="message-helper"
           ></textarea>
           <span id="message-helper" style="font-size:0.72rem; color: var(--ink-subtle); margin-top: 6px; display:block;">
             The more detail, the better I can help you.
           </span>
         </div>
-        <button type="submit" class="btn btn-accent" id="submit-btn" aria-label="Send message">
+        <button type="submit" class="btn btn-accent magnetic" id="submit-btn" aria-label="Send message">
           <span id="submit-text">Send Message</span>
           <svg id="submit-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -716,13 +797,15 @@
     </div>
   </section>
 
+  </main>
+
   <!-- ===== FOOTER ===== -->
   <footer>
     <div class="footer-container">
       <div class="footer-cta-block">
         <h2 class="footer-cta-heading">Need a custom system, thesis project, or AI model?</h2>
         <p class="footer-cta-sub">I build functional, well-documented software. Currently accepting commissions for web applications, POS software, thesis projects, and custom AI model training.</p>
-        <a href="#contact" class="btn btn-accent footer-cta-btn">Start Your Project</a>
+        <a href="#contact" class="btn btn-accent footer-cta-btn magnetic">Start Your Project</a>
       </div>
 
       <div class="footer-middle">
@@ -760,7 +843,7 @@
           </a>
         </div>
         <a href="#hero" class="back-to-top-text footer-link" aria-label="Back to top">
-          Back to top <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="margin-left: 4px; vertical-align: middle;"><path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back to top <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="margin-left: 4px; vertical-align: middle;" aria-hidden="true"><path d="M8 12V4M8 4L4 8M8 4L12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
     </div>
@@ -770,6 +853,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
   <script src="index.js"></script>
 </body>
 </html>
