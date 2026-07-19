@@ -1347,28 +1347,26 @@ nav.drawer-open {
   display: block;
 }
 
-.about-image-accent {
-  position: absolute;
-  bottom: -20px;
-  right: -16px;
-  left: 16px;
-  background: var(--surface-2);
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
-  box-shadow: 0 10px 30px oklch(0 0 0 / 0.06);
+/* Academic Credentials Grid */
+.academic-credentials-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-6);
 }
 
-.about-badge-item {
+.academic-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.about-badge-tag {
+.academic-badge-tag {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1376,27 +1374,21 @@ nav.drawer-open {
   color: var(--accent);
 }
 
-.about-badge-title {
+.academic-badge-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: var(--ink);
   line-height: 1.2;
 }
 
-.about-badge-sub {
-  font-size: 0.75rem;
+.academic-badge-sub {
+  font-size: 0.76rem;
   color: var(--ink-muted);
   font-weight: 500;
 }
 
-.about-badge-divider {
-  height: 1px;
-  background: var(--border);
-  width: 100%;
-}
-
-.about-body { padding-top: var(--space-8); }
+.about-body { padding-top: var(--space-4); }
 
 .about-text {
   font-size: clamp(0.9rem, 1.6vw, 1.05rem);
