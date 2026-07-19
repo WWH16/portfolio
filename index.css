@@ -1350,7 +1350,7 @@ nav.drawer-open {
 /* Academic Credentials Grid */
 .academic-credentials-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--space-4);
   margin-top: var(--space-6);
   margin-bottom: var(--space-6);
