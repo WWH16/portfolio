@@ -132,6 +132,7 @@ function onLoaderComplete() {
   initScrollReveal();
   initProjectRows();
   initContactForm();
+  initGitHubStats();
 
   // Set current year dynamically in footer
   const yearEl = $('#current-year');
@@ -154,6 +155,39 @@ function onLoaderComplete() {
     };
     updateTime();
     setInterval(updateTime, 1000);
+  }
+}
+
+// ─── GitHub API Stats Fetch & Theme Sync ────────────────────
+function initGitHubStats() {
+  const repoEl = $('#github-repo-count');
+  const followerEl = $('#github-follower-count');
+  const graphImg = $('#github-graph-img');
+
+  const updateGraphColor = (theme) => {
+    if (!graphImg) return;
+    const color = theme === 'dark' ? '39d353' : '216e39';
+    graphImg.src = `https://ghchart.rshah.org/${color}/WWH16`;
+  };
+
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  updateGraphColor(currentTheme);
+
+  window.addEventListener('themechange', (e) => {
+    updateGraphColor(e.detail.theme);
+  });
+
+  if (repoEl && followerEl) {
+    fetch('https://api.github.com/users/WWH16')
+      .then((res) => {
+        if (!res.ok) throw new Error('API fetch error');
+        return res.json();
+      })
+      .then((data) => {
+        if (data.public_repos !== undefined) repoEl.textContent = data.public_repos;
+        if (data.followers !== undefined) followerEl.textContent = data.followers;
+      })
+      .catch(() => {});
   }
 }
 

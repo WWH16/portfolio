@@ -1115,6 +1115,210 @@ nav.drawer-open {
 }
 
 /* ============================
+   GITHUB CONTRIBUTIONS SECTION
+   ============================ */
+.github-section {
+  padding: 0 var(--space-8) var(--space-32);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.github-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.github-sub {
+  font-size: 1rem;
+  color: var(--ink-muted);
+  margin-top: var(--space-2);
+}
+
+.github-sub a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.github-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.github-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.github-profile-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.github-avatar {
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+
+.github-username {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.github-handle {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-subtle);
+}
+
+.github-bio {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.github-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-6) 0;
+}
+
+.metric-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.metric-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--ink-subtle);
+}
+
+.metric-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.metric-value.text-muted {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  font-family: var(--font-body);
+}
+
+.github-calendar-box {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.github-calendar-header {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.github-calendar-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.github-graph-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  background: var(--bg);
+  padding: var(--space-6) var(--space-4);
+  -webkit-overflow-scrolling: touch;
+}
+
+.github-graph-img {
+  width: 100%;
+  max-width: 1000px;
+  min-width: 650px;
+  height: auto;
+  display: block;
+}
+
+.github-calendar-footer {
+  padding: var(--space-3) var(--space-6);
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+}
+
+.github-footer-link {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color var(--dur-fast);
+}
+
+.github-footer-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.github-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink-subtle);
+  font-size: 0.72rem;
+}
+
+.legend-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.legend-box.level-0 { background: #ebedf0; }
+.legend-box.level-1 { background: #9be9a8; }
+.legend-box.level-2 { background: #40c463; }
+.legend-box.level-3 { background: #30a14e; }
+.legend-box.level-4 { background: #216e39; }
+
+[data-theme="dark"] .legend-box.level-0 { background: #161b22; }
+[data-theme="dark"] .legend-box.level-1 { background: #0e4429; }
+[data-theme="dark"] .legend-box.level-2 { background: #006d32; }
+[data-theme="dark"] .legend-box.level-3 { background: #26a641; }
+[data-theme="dark"] .legend-box.level-4 { background: #39d353; }
+
+/* ============================
    ABOUT
    ============================ */
 .about-section {
