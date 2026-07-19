@@ -1779,39 +1779,7 @@ footer {
   text-align: right;
 }
 
-.availability-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1.5) var(--space-3.5);
-  background-color: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 99px;
-  font-size: 0.8rem;
-  color: var(--ink-muted);
-}
 
-.availability-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #10b981;
-  border-radius: 50%;
-  position: relative;
-  display: inline-block;
-  animation: pulse-green 2s infinite;
-}
-
-@keyframes pulse-green {
-  0% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-  }
-}
 
 .footer-timezone {
   font-size: 0.8rem;
@@ -1918,33 +1886,38 @@ footer {
 }
 
 /* ============================
-   AVAILABILITY BADGE
+   EDITORIAL STATUS TAG
    ============================ */
-.avail-badge {
+.availability-block {
   display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-left: 2px solid var(--accent);
+  padding-left: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.availability-status {
+  display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: var(--accent-alpha-08);
-  border: 1px solid var(--accent-alpha-25);
-  padding: var(--space-2) var(--space-4);
-  border-radius: 100px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--ink);
 }
 
-.avail-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: pulse-avail 2s ease-in-out infinite;
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
 }
 
-@keyframes pulse-avail {
-  0%, 100% { box-shadow: 0 0 0 0 var(--accent-alpha-50); }
-  50% { box-shadow: 0 0 0 5px oklch(0.56 0.19 145 / 0); }
+.availability-desc {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
 }
 
 /* ============================
