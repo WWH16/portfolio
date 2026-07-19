@@ -133,6 +133,7 @@ function onLoaderComplete() {
   initProjectRows();
   initContactForm();
   initGitHubStats();
+  initDynamicProjects();
 
   // Set current year dynamically in footer
   const yearEl = $('#current-year');
@@ -1058,4 +1059,132 @@ function initScrollToTop() {
       });
     }
   });
+}
+
+// ============================================================
+// DYNAMIC GITHUB PROJECTS
+// ============================================================
+async function initDynamicProjects() {
+  const workList = document.querySelector('.work-list');
+  if (!workList) return;
+
+  try {
+    const targetRepos = ['tumor-classification-web-ver', 'MMS', 'barangay_connect'];
+    
+    // Fetch specifically the 3 repos requested
+    const repoPromises = targetRepos.map(name => 
+      fetch(`https://api.github.com/repos/WWH16/${name}`).then(res => {
+        if (!res.ok) throw new Error(`Failed to fetch repo: ${name}`);
+        return res.json();
+      })
+    );
+    
+    let repos = await Promise.all(repoPromises);
+
+    // Fade out existing items
+    gsap.to(workList.children, {
+      opacity: 0,
+      y: 20,
+      duration: 0.4,
+      onComplete: async () => {
+        workList.innerHTML = ''; // Clear static items
+
+        let index = 1;
+        const newElements = [];
+        
+        for (const repo of repos) {
+          const tags = repo.topics || [];
+          if (repo.language && !tags.includes(repo.language.toLowerCase())) {
+            tags.push(repo.language);
+          }
+          
+          let tagsHtml = tags.slice(0, 3).map(tag => `<span class="project-tag">${tag}</span>`).join('');
+          if (!tagsHtml) tagsHtml = `<span class="project-tag">Project</span>`;
+          
+          const year = new Date(repo.pushed_at || repo.created_at).getFullYear();
+          
+          let imgSrc = '';
+          try {
+            const assetsRes = await fetch(`https://api.github.com/repos/WWH16/${repo.name}/contents/assets`);
+            if (assetsRes.ok) {
+              const assets = await assetsRes.json();
+              const imgFile = assets.find(file => file.name.match(/\\.(jpg|jpeg|png|gif|webp)$/i));
+              if (imgFile) {
+                imgSrc = imgFile.download_url;
+              }
+            }
+          } catch (e) {
+            console.warn('Could not fetch assets for', repo.name);
+          }
+          
+          if (!imgSrc) {
+            imgSrc = 'assets/project_branding_1783858362778.jpg'; // Static fallback
+          }
+
+          const numStr = String(index).padStart(2, '0');
+          
+          let displayName = repo.name.replace(/[-_]/g, ' ');
+          if (repo.name === 'MMS') {
+            displayName = 'Movie Recommendation System';
+          }
+          
+          const a = document.createElement('a');
+          a.href = repo.html_url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'project-row';
+          a.style.opacity = '0';
+          a.style.transform = 'translateY(28px)';
+          a.setAttribute('role', 'listitem');
+          a.setAttribute('aria-label', `View ${repo.name} repository`);
+          a.dataset.img = imgSrc;
+          a.dataset.imgAlt = `${displayName} preview`;
+
+          a.innerHTML = `
+            <span class="project-num" aria-hidden="true">${numStr}</span>
+            <div class="project-info">
+              <h3 class="project-title" style="text-transform: capitalize;">${displayName}</h3>
+              <div class="project-tags-row" aria-label="Project tags">
+                ${tagsHtml}
+              </div>
+            </div>
+            <div class="project-row-right">
+              <span class="project-year">${year}</span>
+              <div class="project-arrow" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          `;
+          
+          workList.appendChild(a);
+          newElements.push(a);
+          index++;
+        }
+        
+        // Re-initialize hover events for new rows
+        initProjectRows();
+        
+        // Animate them in
+        gsap.to(newElements, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: workList,
+            start: 'top 90%',
+            toggleActions: 'play reset play reset',
+          }
+        });
+        
+        ScrollTrigger.refresh();
+      }
+    });
+    
+  } catch (err) {
+    console.error('Error loading dynamic projects:', err);
+  }
 }
