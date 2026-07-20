@@ -1109,8 +1109,14 @@ async function initDynamicProjects() {
         const newElements = [];
         
         for (const repo of repos) {
-          const tags = repo.topics || [];
-          if (repo.language && !tags.includes(repo.language.toLowerCase())) {
+          const tagsMap = {
+            'tumor-classification-web-ver': ['Deep Learning', 'Python', 'Flask'],
+            'MMS': ['Python', 'Django', 'Recommender System'],
+            'barangay_connect': ['PHP', 'MySQL', 'Web App']
+          };
+          
+          let tags = tagsMap[repo.name] || repo.topics || [];
+          if (tags.length === 0 && repo.language) {
             tags.push(repo.language);
           }
           
@@ -1133,6 +1139,10 @@ async function initDynamicProjects() {
           let displayName = repo.name.replace(/[-_]/g, ' ');
           if (repo.name === 'MMS') {
             displayName = 'Movie Recommendation System';
+          } else if (repo.name === 'barangay_connect') {
+            displayName = 'Barangay Connect';
+          } else if (repo.name === 'tumor-classification-web-ver') {
+            displayName = 'Tumor Classification';
           }
           
           const a = document.createElement('a');
