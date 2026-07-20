@@ -1350,7 +1350,7 @@ nav.drawer-open {
 /* Academic Credentials Grid */
 .academic-credentials-row {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-4);
   margin-top: var(--space-6);
   margin-bottom: var(--space-6);
@@ -1360,18 +1360,56 @@ nav.drawer-open {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-4);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-mid) var(--ease-out-expo), border-color var(--dur-mid);
+}
+
+.academic-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.academic-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--accent-alpha-08);
+  border: 1px solid var(--accent-alpha-25);
+  color: var(--accent);
+  flex-shrink: 0;
+  transition: background var(--dur-mid), transform var(--dur-mid);
+}
+
+.academic-card:hover .academic-icon-container {
+  background: var(--accent-alpha-10);
+  transform: scale(1.05);
+}
+
+.academic-card-content {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
 .academic-badge-tag {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 700;
   color: var(--accent);
+}
+
+[data-theme="light"] .academic-badge-tag {
+  color: oklch(0.38 0.14 145); /* Forest green tint for high contrast (~6.4:1) */
 }
 
 .academic-badge-title {
