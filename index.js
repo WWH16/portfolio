@@ -1110,9 +1110,9 @@ async function initDynamicProjects() {
         
         for (const repo of repos) {
           const tagsMap = {
-            'tumor-classification-web-ver': ['Deep Learning', 'Python', 'Flask'],
-            'MMS': ['Python', 'Django', 'Recommender System'],
-            'barangay_connect': ['PHP', 'MySQL', 'Web App']
+            'tumor-classification-web-ver': ['Django', 'TensorFlow', 'Deep Learning'],
+            'MMS': ['Django', 'Python', 'Machine Learning'],
+            'barangay_connect': ['Django', 'Tailwind CSS', 'Leaflet.js']
           };
           
           let tags = tagsMap[repo.name] || repo.topics || [];
