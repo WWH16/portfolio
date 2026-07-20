@@ -547,6 +547,22 @@ function initThreeJS() {
     mouseActive = false;
   });
 
+  // Touch Support for Mobile Interactivity
+  const handleTouch = (e) => {
+    if (e.touches && e.touches.length > 0) {
+      const touch = e.touches[0];
+      targetMouseX = (touch.clientX / window.innerWidth - 0.5) * areaW;
+      targetMouseY = -(touch.clientY / window.innerHeight - 0.5) * areaH;
+      mouseActive = true;
+    }
+  };
+
+  document.addEventListener('touchstart', handleTouch, { passive: true });
+  document.addEventListener('touchmove', handleTouch, { passive: true });
+  document.addEventListener('touchend', () => {
+    mouseActive = false;
+  });
+
   const heroEl = $('#hero');
   if (heroEl) {
     heroEl.addEventListener('click', (e) => {
